@@ -1,0 +1,131 @@
+[gd_scene load_steps=22 format=2]
+
+[ext_resource path="res://src/grass_cutter.gd" type="Script" id=1]
+[ext_resource path="res://gfx/grass_cutter.png" type="Texture" id=2]
+[ext_resource path="res://gfx/grass_cutter_left.png" type="Texture" id=3]
+[ext_resource path="res://gfx/grass_cutter_down.png" type="Texture" id=4]
+[ext_resource path="res://gfx/grass_cutter_right.png" type="Texture" id=5]
+[ext_resource path="res://gfx/grass_cutter_up.png" type="Texture" id=6]
+[ext_resource path="res://gfx/grass_grow_4.png" type="Texture" id=7]
+[ext_resource path="res://gfx/grass_grow_1.png" type="Texture" id=8]
+[ext_resource path="res://gfx/grass_grow_0.png" type="Texture" id=9]
+[ext_resource path="res://gfx/grass_grow_3.png" type="Texture" id=10]
+[ext_resource path="res://gfx/grass_grow_2.png" type="Texture" id=11]
+[ext_resource path="res://gfx/grass_grow_5.png" type="Texture" id=12]
+[ext_resource path="res://sfx/346943__maurice-j-k__hedge-cutter-strimmer-[AudioTrimmer.com].wav" type="AudioStream" id=13]
+[ext_resource path="res://sfx/479160__contant-aghony__big-plants-crops-growing-quickly.wav" type="AudioStream" id=14]
+[ext_resource path="res://sfx/18177__bram__icebreak3.wav" type="AudioStream" id=15]
+[ext_resource path="res://gfx/grass_cutter_part.png" type="Texture" id=16]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 15, 15 )
+
+[sub_resource type="SpriteFrames" id=2]
+animations = [ {
+"frames": [ null, ExtResource( 9 ), ExtResource( 8 ), ExtResource( 11 ), ExtResource( 10 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 12 ), ExtResource( 12 ) ],
+"loop": false,
+"name": "grass_grow",
+"speed": 8.0
+} ]
+
+[sub_resource type="Animation" id=3]
+resource_name = "basic"
+length = 0.3
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( -3, -1 ), Vector2( 0, 0 ), Vector2( 3, -1 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite:rotation_degrees")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ 0.0, -5.0, 0.0, 5.0 ]
+}
+
+[sub_resource type="Animation" id=4]
+resource_name = "fade"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/path = NodePath("grass_cutter_sound:volume_db")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ -15.0, -40.0 ]
+}
+
+[sub_resource type="Curve" id=5]
+_data = [ Vector2( 0, 0.726136 ), 0.0, 0.0, 0, 0, Vector2( 0.971591, 0 ), 0.0, 0.0, 0, 0 ]
+
+[node name="grass_cutter" type="Area2D" groups=[
+"grass_cutter",
+]]
+z_index = 1
+script = ExtResource( 1 )
+sprite_right = ExtResource( 5 )
+sprite_left = ExtResource( 3 )
+sprite_up = ExtResource( 6 )
+sprite_down = ExtResource( 4 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 1 )
+
+[node name="Sprite" type="Sprite" parent="."]
+position = Vector2( -2.33782, -0.779274 )
+rotation = -0.0680045
+texture = ExtResource( 2 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+frames = SubResource( 2 )
+animation = "grass_grow"
+
+[node name="grass_cutter_sound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 13 )
+volume_db = -15.0
+autoplay = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/basic = SubResource( 3 )
+
+[node name="grass_cutter_sound_fade" type="AnimationPlayer" parent="."]
+anims/fade = SubResource( 4 )
+
+[node name="grass_grow_sound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 14 )
+
+[node name="crash_sound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 15 )
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+emitting = false
+lifetime = 0.5
+one_shot = true
+explosiveness = 0.76
+texture = ExtResource( 16 )
+direction = Vector2( 0, 0 )
+spread = 180.0
+gravity = Vector2( 0, 0 )
+initial_velocity = 127.66
+initial_velocity_random = 0.17
+angular_velocity = 704.68
+angular_velocity_random = 0.38
+scale_amount_curve = SubResource( 5 )
